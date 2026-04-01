@@ -2,7 +2,7 @@
 Módulo de servicios del inventario
 Contiene funciones CRUD y estadísticas
 """
-
+# Add a new product to the inventory list
 def agregar_producto(inventario, nombre, precio, cantidad):
     """Agrega un producto al inventario"""
     inventario.append({
@@ -11,7 +11,7 @@ def agregar_producto(inventario, nombre, precio, cantidad):
         "cantidad": cantidad
     })
 
-
+# Display all products in the inventory
 def mostrar_inventario(inventario):
     """Muestra todos los productos"""
     if not inventario:
@@ -21,7 +21,7 @@ def mostrar_inventario(inventario):
     for producto in inventario:
         print(f"{producto['nombre']} - ${producto['precio']} - Cantidad: {producto['cantidad']}")
 
-
+# Search for a product by name (case insensitive)
 def buscar_producto(inventario, nombre):
     """Busca un producto por nombre"""
     for producto in inventario:
@@ -29,7 +29,7 @@ def buscar_producto(inventario, nombre):
             return producto
     return None
 
-
+# Update product price and/or quantity
 def actualizar_producto(inventario, nombre, nuevo_precio=None, nueva_cantidad=None):
     """Actualiza un producto"""
     producto = buscar_producto(inventario, nombre)
@@ -41,7 +41,7 @@ def actualizar_producto(inventario, nombre, nuevo_precio=None, nueva_cantidad=No
         return True
     return False
 
-
+# Remove a product from the inventory
 def eliminar_producto(inventario, nombre):
     """Elimina un producto"""
     producto = buscar_producto(inventario, nombre)
@@ -61,7 +61,8 @@ def calcular_estadisticas(inventario):
 
     producto_mas_caro = max(inventario, key=lambda p: p["precio"])
     producto_mayor_stock = max(inventario, key=lambda p: p["cantidad"])
-
+# Find product with highest price
+# Find product with highest stock
     return {
         "unidades_totales": unidades_totales,
         "valor_total": valor_total,

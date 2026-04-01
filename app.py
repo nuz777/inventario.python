@@ -1,8 +1,10 @@
 from src.servicios import *
 from src.archivos import *
 
+# Main inventory list (stored in memory)
 inventario = []
 
+# Infinite loop to keep the program running
 while True:
     def mostrar_menu():
         print("\n" + "="*40)
@@ -18,72 +20,98 @@ while True:
         print("8️⃣  Cargar desde CSV")
         print("9️⃣  Salir")
         print("="*40)
-
     mostrar_menu()
-    opcion = input(" Elige una opción: ")
+#Get user option
+    opcion = input("seleccione una opcion: ")
+
+# Handle possible errors to prevent program crash
 
     try:
+# Option 1: Add a new product
         if opcion == "1":
             nombre = input("Nombre: ")
             precio = float(input("Precio: "))
             cantidad = int(input("Cantidad: "))
-            agregar_producto(inventario, nombre, precio, cantidad)
 
+            agregar_producto(inventario, nombre, precio, cantidad)
+            
         elif opcion == "2":
             mostrar_inventario(inventario)
 
-        elif opcion == "3":
-            nombre = input("Buscar: ")
-            print(buscar_producto(inventario, nombre))
+        elif opcion =="3":
+            nombre = input("Nombre a buscar: ").lower()
+            producto = buscar_producto(inventario, nombre)
+            if producto:
+                print(producto)
+            else:
+                print("producto no encontrado...")
 
-        elif opcion == "4":
-            nombre = input("Producto: ")
-            precio = input("Nuevo precio (enter para omitir): ")
-            cantidad = input("Nueva cantidad (enter para omitir): ")
+        elif opcion =="4":
+            nombre = input("producto a actualizar ")
+            nuevo_precio = input("Nuevo precio (enter para omitir )")
+            nueva_cantidad = input("Nueva cantidad (Enter para omitir) ")
+            actualizado = actualizar_producto (inventario, nombre, float(nuevo_precio)if nuevo_precio else None, int(nueva_cantidad) if nueva_cantidad else None)
+            
+            if actualizado:
+                print("producto actuluazado")
+            else:
+                print("producto no encontrado...")
 
-            actualizar_producto(
-                inventario,
-                nombre,
-                float(precio) if precio else None,
-                int(cantidad) if cantidad else None
-            )
 
         elif opcion == "5":
-            nombre = input("Eliminar: ")
-            eliminar_producto(inventario, nombre)
-
+            nombre = input("Producto a eliminar: ")
+            eliminado = eliminar_producto(inventario, nombre)
+            if eliminado:
+                print("producto eliminado")
+            else: 
+                print("producto no encontrado...")
+# Option 6: Show statistics
         elif opcion == "6":
-            stats = calcular_estadisticas(inventario)
-            if stats:
-                print(stats)
+            estadisticas = calcular_estadisticas(inventario)
+            if estadisticas:
+                print(f"Unidades totales: {estadisticas['unidades_totales']}")
+                print(f"Valor total: ${estadisticas['valor_total']:.2f}")
+                print(f"Producto más caro: {estadisticas['producto_mas_caro']['nombre']} (${estadisticas['producto_mas_caro']['precio']:.2f})")
+                print(f"Mayor stock: {estadisticas['producto_mayor_stock']['nombre']} ({estadisticas['producto_mayor_stock']['cantidad']} unidades)")
+            else:
+                print("inventario vacio")
+
 
         elif opcion == "7":
-            ruta = input("Ruta archivo: ")
+            ruta = input("ruta del archivo para guardar:  ")
             guardar_csv(inventario, ruta)
-
-        elif opcion == "8":
-            ruta = input("Ruta archivo: ")
-            nuevos = cargar_csv(ruta)
-
-            if nuevos:
-                decision = input("¿Sobrescribir? (S/N): ").lower()
+            if ruta:
+                print(f"archivo guardado en {ruta}")
+            else:
+                print("ruta invalida")
+# Option 8: Load inventory from CSV file
+# Merge or overwrite inventory based on user decision
+        elif opcion == 8:
+            ruta = input("Ruta del archivo: ")
+            nuevos_productos = cargar_csv(ruta)
+            if nuevos_productos:
+                decision =input("¿ Sobrescribir Inventario (S/N): ").lower()
                 if decision == "s":
-                    inventario = nuevos
+                    inventario = nuevos_productos
                 else:
-                    for n in nuevos:
-                        existente = buscar_producto(inventario, n["nombre"])
+                    for nuevo in nuevos_productos:
+                        existente = buscar_producto(inventario, nuevo["nombre"])
                         if existente:
-                            existente["cantidad"] += n["cantidad"]
-                            existente["precio"] = n["precio"]
+                            existente["cantidad"]+= nuevo["cantidad"]
+                            existente["precio"] = nuevo["precio"]
                         else:
-                            inventario.append(n)
+                            inventario.append(nuevo)
+                            print("Archivo cargado exitosamente")
 
+# Exit the program
         elif opcion == "9":
-            print("Bye 👋..... hehe")
-            break
+            print("Saliendo del programa...")
+            break      
 
         else:
-            print("Opción inválida")
+            print("Opcion no valida, intente de nuevo...")
+    except ValueError:
+        print("Entrada no valida, por favor ingrese el tipo de dato correcto.")
 
-    except Exception as e:
-        print("Error:", e)
+    except Exception as error:
+        print("Ocurrio un error inesperado:", error)
