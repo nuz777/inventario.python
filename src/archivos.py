@@ -1,8 +1,6 @@
 import csv
 # Import CSV module to handle file operations
 
-
-
 def guardar_csv(inventario, ruta, incluir_header=True):
     """"Guardar el inventario en un archivo CSV"""
     if not inventario:
@@ -40,30 +38,25 @@ def cargar_csv(ruta):
             if header != ["nombre", "precio", "cantidad"]:
                 print("Formato de archivo no valido")
                 return []
-            # Loop through each row in the CSV file
+            
             for fila in reader:
-                try:
-                    # Try block to validate each row individually
+                try: # Try block to validate each row individually
                     if len(fila) != 3:
                         raise ValueError("Fila con formato incorrecto")
                     # Ensure row has exactly 3 columns
                     nombre = fila[0]
                     precio = float(fila[1])
                     cantidad = int(fila[2])
-                    # Validate that values are not negative
-                    if precio < 0 or cantidad < 0:
-                        raise ValueError("Precio y cantidad deben ser no negativos")
-                    # Add valid product to the list
+                    if precio < 0 or cantidad < 0: # Validate that values are not negative
+                        raise ValueError("Precio y cantidad deben ser no negativos")  # Add valid product to the list
                     inventario.append({
                         "nombre": nombre,
                         "precio": precio,
                         "cantidad": cantidad
                     })
-                    # If any error occurs in the row, count it as invalid
                 except:
-                    erroes += 1
-                    print(f"{erroes} fila con formato incorrect0")
-                    # Continue processing remaining rows without stopping
+                    erroes += 1 # If any error occurs in the row, count it as invalid
+                    print(f"{erroes} fila con formato incorrect0") # Continue processing remaining rows without stopping
                     return inventario
 # Handle case where file does not exist
     except FileNotFoundError:

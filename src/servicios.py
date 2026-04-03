@@ -4,12 +4,9 @@ Contiene funciones CRUD y estadísticas
 """
 # Add a new product to the inventory list
 def agregar_producto(inventario, nombre, precio, cantidad):
-    """Agrega un producto al inventario"""
-    inventario.append({
-        "nombre": nombre,
-        "precio": precio,
-        "cantidad": cantidad
-    })
+    producto = {"nombre": nombre, "precio": precio, "cantidad": cantidad}
+    inventario.append(producto)
+    return True
 
 # Display all products in the inventory
 def mostrar_inventario(inventario):
@@ -61,11 +58,11 @@ def calcular_estadisticas(inventario):
 
     producto_mas_caro = max(inventario, key=lambda p: p["precio"])
     producto_mayor_stock = max(inventario, key=lambda p: p["cantidad"])
-# Find product with highest price
-# Find product with highest stock
+
+
     return {
         "unidades_totales": unidades_totales,
         "valor_total": valor_total,
-        "producto_mas_caro": producto_mas_caro,
-        "producto_mayor_stock": producto_mayor_stock
+        "producto_mas_caro": producto_mas_caro, # Find product with highest price
+        "producto_mayor_stock": producto_mayor_stock # Find product with highest stock
     }
